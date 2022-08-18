@@ -37,6 +37,7 @@ include_files = {
 exclude_files = {
     --"spec/fixtures/invalid-module.lua",
     --"spec-old-api/fixtures/invalid-module.lua",
+    "kong/plugins/aws-kinesis/jsonpath.lua",
 }
 
 
