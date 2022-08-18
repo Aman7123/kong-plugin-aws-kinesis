@@ -104,7 +104,7 @@ local M = {}
 -- Use Roberto Ierusalimschy's fabulous LPeg pattern-matching library
 local lpeg = require('lpeg')
 local S, R, P, V = lpeg.S, lpeg.R, lpeg.P, lpeg.V
-local C, Cc, Ct, Cp = lpeg.C, lpeg.Cc, lpeg.Cg, lpeg.Ct, lpeg.Cp
+local C, Cc, Ct, Cp = lpeg.C, lpeg.Cc, lpeg.Ct, lpeg.Cp
 
 
 -- Return values for match_path()
@@ -668,7 +668,7 @@ function M.value(obj, expr)
         return nil, err
     end
     if nodes ~= nil then
-        return n.value
+        return nodes[1]value
     end
     return nil, 'no element matching expression'
 end
