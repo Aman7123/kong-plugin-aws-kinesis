@@ -1,6 +1,5 @@
 local PLUGIN_NAME = "aws-kinesis"
 local mcafee = require("kong.plugins."..PLUGIN_NAME..".mcafee-transform")
-local sha256 = require("kong.plugins."..PLUGIN_NAME..".mcafee-sha256")
 local cjson = require("cjson")
 
 local dummy_simple_conf = {
