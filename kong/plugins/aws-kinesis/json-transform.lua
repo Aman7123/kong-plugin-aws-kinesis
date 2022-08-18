@@ -15,11 +15,11 @@ local CLIENTIP_PREFIX = "clientip|"
 local M = {}
 
 local function string_starts(str, start)
-   return string.sub(str,1,string.len(start)) == start
+   return string.sub(str,1,#start) == start
 end
 
 local function json_transform(template, prefix, jsontable)
-  local expr = string.sub(template, string.len(prefix) + 1)
+  local expr = string.sub(template, #prefix + 1)
   return jp.value(jsontable, expr)
 end
 
@@ -54,7 +54,7 @@ function M.transform(template, params, headers, clientip)
     elseif string_starts(template, PARAM_PREFIX) then
       return json_transform(template, PARAM_PREFIX, params)
     elseif string_starts(template, VALUE_PREFIX) then
-      return string.sub(template, string.len(VALUE_PREFIX) + 1)
+      return string.sub(template, #VALUE_PREFIX + 1)
     elseif string_starts(template, CLIENTIP_PREFIX) then
       return clientip
     else

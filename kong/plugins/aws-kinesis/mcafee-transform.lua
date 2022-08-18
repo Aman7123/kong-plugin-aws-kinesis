@@ -1,6 +1,4 @@
 local cjson = require "cjson.safe"
-local utils = require "kong.tools.utils"
-local jp = require "kong.plugins.aws-kinesis.jsonpath"
 local jsont = require "kong.plugins.aws-kinesis.json-transform"
 local sha256 = require "kong.plugins.aws-kinesis.mcafee-sha256"
 

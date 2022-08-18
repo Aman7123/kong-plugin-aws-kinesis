@@ -104,7 +104,7 @@ local M = {}
 -- Use Roberto Ierusalimschy's fabulous LPeg pattern-matching library
 local lpeg = require('lpeg')
 local S, R, P, V = lpeg.S, lpeg.R, lpeg.P, lpeg.V
-local C, Cc, Cg, Ct, Cp = lpeg.C, lpeg.Cc, lpeg.Cg, lpeg.Ct, lpeg.Cp
+local C, Cc, Ct, Cp = lpeg.C, lpeg.Cc, lpeg.Cg, lpeg.Ct, lpeg.Cp
 
 
 -- Return values for match_path()
@@ -160,7 +160,6 @@ local jsonpath_grammer = (function()
 
     local sign = S'+-'
     local digit = R('09')
-    local letter = R('AZ','az')
     local alpha0 = R('AZ','az') + '_'
     local alphaN = R('AZ','az','09') + '_'
     local hexdigit = R('09', 'AF', 'af')
@@ -427,7 +426,7 @@ end
 
 
 
-function match_path(ast, path, parent, obj)
+local function match_path(ast, path, parent, obj)
     local descendants = false
     local ast_iter = ipairs(ast)
     local ast_key, ast_spec = ast_iter(ast, 0)
@@ -664,11 +663,11 @@ end
 --      -- 'Nigel Rees'
 --
 function M.value(obj, expr)
-    local nodes, err = M.nodes(obj, expr, count)
+    local nodes, err = M.nodes(obj, expr)
     if nodes == nil then
         return nil, err
     end
-    for _,n in ipairs(nodes) do
+    if nodes ~= nil then
         return n.value
     end
     return nil, 'no element matching expression'

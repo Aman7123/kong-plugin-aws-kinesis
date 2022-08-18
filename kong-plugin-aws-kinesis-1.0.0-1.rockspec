@@ -1,14 +1,10 @@
 package = "kong-plugin-aws-kinesis"
 version = "1.0.0-1"
 supported_platforms = {"linux", "macosx"}
-parent_resource = {
-  url = "git://github.com/rbang1/kong-plugin-aws-kinesis",
-  tag = "0.1.1"
-}
 
 description = {
   summary = "Kong plugin to write to a AWS Kinesis Stream",
-  homepage = "https://github.com/rbang1/kong-plugin-aws-kinesis",
+  homepage = "https://github.com/Aman7123/mcafee-aws-kinesis",
   license = "Apache"
 }
 

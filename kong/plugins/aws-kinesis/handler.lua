@@ -5,6 +5,7 @@ local bodyt = require "kong.plugins.aws-kinesis.mcafee-transform"
 local aws_v4 = require "kong.plugins.aws-lambda.v4"
 local http = require "resty.http"
 local Multipart = require "multipart"
+local utils = require "kong.tools.utils"
 local CONTENT_TYPE = "content-type"
 
 -- constructor
@@ -80,55 +81,42 @@ function plugin:access(config)
   -- Trigger request
   local host = string.format("kinesis.%s.amazonaws.com", config.aws_region)
   local client = http.new()
-  -- client:connect(host, 443)
-  -- client:set_timeout(config.timeout)
-  -- local ok, err = client:ssl_handshake()
-  -- if not ok then
-  --   return kong.response.exit(500,  err)
-  -- end
+  client:connect(host, 443)
+  client:set_timeout(config.timeout)
+  local ok, err = client:ssl_handshake()
+  if not ok then
+    return kong.response.exit(500,  err)
+  end
 
-  -- Replaced request to mockbin
-  local upstreamHost = request.headers["Host"]
-  request.headers["Host"] = "mockbin.org"
-  request.headers["X-Kinesis-URL"] = host
-  request.headers["X-Host-Original"] = upstreamHost
-  local res, err = client:request_uri("https://mockbin.org/bin/27f1ffd0-fedb-4774-9bc6-fa870ef4e31d", {
+  local res, err = client:request {
     method = "POST",
+    path = request.url,
     body = request.body,
-    headers = request.headers,
-    ssl_verify = false
-  })
-  return kong.response.exit(res.status, res.body, {["Content-Type"] = "application/json"})
+    headers = request.headers
+  }
 
-  -- local res, err = client:request {
-  --   method = "POST",
-  --   path = request.url,
-  --   body = request.body,
-  --   headers = request.headers
-  -- }
+  if not res then
+    return kong.response.exit(500,  err)
+  end
 
-  -- if not res then
-  --   return kong.response.exit(500,  err)
-  -- end
+  local resp_body = res:read_body()
+  local resp_headers = res.headers
 
-  -- local resp_body = res:read_body()
-  -- local resp_headers = res.headers
+  local ok, err = client:set_keepalive(config.keepalive)
+  if not ok then
+    return kong.response.exit(500,  err)
+  end
 
-  -- local ok, err = client:set_keepalive(config.keepalive)
-  -- if not ok then
-  --   return kong.response.exit(500,  err)
-  -- end
+  ngx.status = res.status
 
-  -- ngx.status = res.status
+  -- Send response to client
+  for k, v in pairs(resp_headers) do
+    ngx.header[k] = v
+  end
 
-  -- -- Send response to client
-  -- for k, v in pairs(resp_headers) do
-  --   ngx.header[k] = v
-  -- end
+  ngx.say(resp_body)
 
-  -- ngx.say(resp_body)
-
-  -- return ngx.exit(res.status)
+  return ngx.exit(res.status)
 end
 
 -- set the plugin priority, which determines plugin execution order
