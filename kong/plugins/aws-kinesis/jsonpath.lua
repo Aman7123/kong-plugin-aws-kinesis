@@ -668,7 +668,7 @@ function M.value(obj, expr)
         return nil, err
     end
     if nodes ~= nil then
-        return nodes[1]value
+        return nodes[1]["value"]
     end
     return nil, 'no element matching expression'
 end
