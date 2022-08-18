@@ -667,8 +667,8 @@ function M.value(obj, expr)
     if nodes == nil then
         return nil, err
     end
-    if nodes ~= nil then
-        return nodes[1]["value"]
+    for _,n in ipairs(nodes) do
+        return n.value
     end
     return nil, 'no element matching expression'
 end
