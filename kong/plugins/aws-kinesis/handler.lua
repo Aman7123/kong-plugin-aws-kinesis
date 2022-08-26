@@ -120,7 +120,7 @@ function plugin:access(config)
 end
 
 -- set the plugin priority, which determines plugin execution order
-plugin.PRIORITY = 750
+plugin.PRIORITY = 751
 
 -- return our plugin object
 return plugin
