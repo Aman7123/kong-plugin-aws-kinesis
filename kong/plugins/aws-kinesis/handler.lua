@@ -100,23 +100,17 @@ function plugin:access(config)
   end
 
   local resp_body = res:read_body()
-  local resp_headers = res.headers
 
   local ok, err = client:set_keepalive(config.keepalive)
   if not ok then
     return kong.response.exit(500,  err)
   end
 
-  ngx.status = res.status
-
-  -- Send response to client
-  for k, v in pairs(resp_headers) do
-    ngx.header[k] = v
+  if config.aws_debug then
+    ngx.log(ngx.INFO, "Kinesis Response: "..resp_body)
   end
 
-  ngx.say(resp_body)
-
-  return ngx.exit(res.status)
+  return kong.response.exit(res.status, resp_body, res.headers)
 end
 
 -- set the plugin priority, which determines plugin execution order
