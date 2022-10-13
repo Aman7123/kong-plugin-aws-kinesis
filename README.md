@@ -31,5 +31,5 @@ To test please install one framework above and run `pongo run` in the default re
 
 Example resources
 =================================
-* For a complete walkthrough of Kong plugin creation check [this blogpost on the Kong website](https://konghq.com/blog/custom-lua-plugin-kong-gateway).
+* For a complete walk through of Kong plugin creation check [this blog post on the Kong website](https://konghq.com/blog/custom-lua-plugin-kong-gateway).
 * For Kong PDK resources see [Kong docs](https://docs.konghq.com/gateway/latest/pdk/)

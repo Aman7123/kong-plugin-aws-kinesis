@@ -1,5 +1,4 @@
 -- load the base plugin object and create a subclass
-local plugin = require("kong.plugins.base_plugin"):extend()
 local cjson = require "cjson.safe"
 local bodyt = require "kong.plugins.aws-kinesis.mcafee-transform"
 local aws_v4 = require "kong.plugins.aws-lambda.v4"
@@ -8,10 +7,10 @@ local Multipart = require "multipart"
 local utils = require "kong.tools.utils"
 local CONTENT_TYPE = "content-type"
 
--- constructor
-function plugin:new()
-  plugin.super.new(self, "aws-kinesis")  
-end
+-- set the plugin priority, which determines plugin execution order
+local AWSKinesis = {}
+AWSKinesis.PRIORITY = 751
+AWSKinesis.VERSION = "1.0.0"
 
 -- McAfee / Kong PoC function
 -- Can be found: https://github.com/rbang1/kong-plugin-aws-kinesis
@@ -34,9 +33,7 @@ local function retrieve_parameters()
 end
 
 -- runs in the 'access_by_lua_block'
-function plugin:access(config)
-  plugin.super.access(self)
-
+function AWSKinesis:access(config)
   local params = retrieve_parameters()
   -- set client ip
   local client_ip = ngx.var.remote_addr
@@ -70,7 +67,7 @@ function plugin:access(config)
   }
 
   if config.aws_debug then
-    ngx.log(ngx.INFO, "AWS Request: "..cjson.encode(opts))
+    kong.log.info("AWS Request: "..cjson.encode(opts))
   end
 
   local request, err = aws_v4(opts)
@@ -100,27 +97,18 @@ function plugin:access(config)
   end
 
   local resp_body = res:read_body()
-  local resp_headers = res.headers
 
   local ok, err = client:set_keepalive(config.keepalive)
   if not ok then
     return kong.response.exit(500,  err)
   end
 
-  ngx.status = res.status
-
-  -- Send response to client
-  for k, v in pairs(resp_headers) do
-    ngx.header[k] = v
+  if config.aws_debug then
+    kong.log.info("Kinesis Response: "..resp_body)
   end
 
-  ngx.say(resp_body)
-
-  return ngx.exit(res.status)
+  return kong.response.exit(res.status, resp_body, res.headers)
 end
 
--- set the plugin priority, which determines plugin execution order
-plugin.PRIORITY = 751
-
 -- return our plugin object
-return plugin
+return AWSKinesis
