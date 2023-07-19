@@ -1,10 +1,10 @@
-McAfee AWS Kinesis
+Kong AWS Kinesis
 ====================
 * Experimental code in `develop` branch
 * Prerequisites: Lua knowledge / experience
 * Plugin execution priority: `751`
 
-This repository contains a custom modification of [AWS Kinesis Kong Plugin](https://github.com/rbang1/kong-plugin-aws-kinesis) for McAfee. This plugin accepts AWS Kinesis logs on a Kong route and forwards this traffic through a TCP connection to AWS Kinesis data steam. This specific plugin was designed to consume a wider range of request bodies including batched if selected and `data_template`.
+This repository contains a custom modification of [AWS Kinesis Kong Plugin](https://github.com/rbang1/kong-plugin-aws-kinesis). This plugin accepts AWS Kinesis logs on a Kong route and forwards this traffic through a TCP connection to AWS Kinesis data steam. This specific plugin was designed to consume a wider range of request bodies including batched if selected and `data_template`.
 
 Configuration
 =================================
